@@ -1,4 +1,5 @@
 const express = require('express');
+const { read } = require('fs');
 const path = require('path');
 const { clog } = require('./middleware/clog');
 const api = require('./routes/index.js');
@@ -13,9 +14,9 @@ app.use(clog);
 // Middleware for parsing JSON and urlencoded form data
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static('public'));
 app.use('/api', api);
 
-app.use(express.static('public'));
 
 // GET Route for homepage
 app.get('/', (req, res) =>
@@ -25,6 +26,11 @@ app.get('/', (req, res) =>
 // GET Route for feedback page
 app.get('/feedback', (req, res) =>
   res.sendFile(path.join(__dirname, '/public/pages/feedback.html'))
+);
+
+// GET Route for 404 page
+app.get("*", (req, res) => 
+  read.sendFile(path.join(__dirname, '/public/pages/404.html'))
 );
 
 app.listen(PORT, () =>
